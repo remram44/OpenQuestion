@@ -4,6 +4,11 @@ ENV TINI_VERSION v0.18.0
 RUN curl -Lo /tini https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini && \
     chmod +x /tini
 
+RUN apt-get update && \
+    apt-get install -yy openjdk-17-jre-headless && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 ENV PYTHONFAULTHANDLER=1
 
 RUN mkdir -p /usr/src/app/home && \
@@ -13,6 +18,8 @@ WORKDIR /usr/src/app
 
 COPY requirements.txt .
 RUN pip --disable-pip-version-check --no-cache-dir install -r requirements.txt
+
+RUN python -c "import anvil_app_server; anvil_app_server.find_or_download_app_server()"
 
 COPY client_code client_code
 COPY server_code server_code
