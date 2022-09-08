@@ -24,9 +24,12 @@ RUN python -c "import anvil_app_server; anvil_app_server.find_or_download_app_se
 COPY client_code client_code
 COPY server_code server_code
 COPY theme theme
-COPY __init__.py .
+COPY __init__.py .anvil_editor.yaml anvil.yaml .
 
 RUN python -m compileall /usr/src/app
+
+RUN mkdir .anvil-data && chown appuser .anvil-data
+VOLUME /usr/src/app/.anvil-data
 
 USER 998
 ENTRYPOINT ["/tini", "--"]
